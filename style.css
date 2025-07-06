@@ -1,0 +1,255 @@
+/* الخطوط والألوان */
+body {
+  font-family: 'PT Sans', sans-serif;
+  background: #f3f6f9;
+  color: #333;
+  direction: rtl;
+  padding: 20px;
+  --main-color: #3498db;
+}
+
+h1, h2, h3 {
+  color: var(--main-color);
+  font-weight: bold;
+}
+
+.section {
+  display: none;
+}
+
+.section.active {
+  display: block;
+}
+
+/* وميض النص */
+.blinking {
+  animation: blinkingText 1.5s infinite;
+  font-size: 28px;
+  color: var(--main-color);
+  text-align: center;
+  margin-top: 100px;
+}
+
+@keyframes blinkingText {
+  0%, 100% {opacity: 1;}
+  50% {opacity: 0;}
+}
+
+/* الحاويات */
+.welcome-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 90vh;
+  gap: 30px;
+}
+
+.logo-splash {
+  max-width: 180px;
+}
+
+/* الأزرار */
+button {
+  cursor: pointer;
+  border: none;
+  border-radius: 6px;
+  padding: 10px 18px;
+  font-size: 16px;
+  transition: background-color 0.3s;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.btn-primary {
+  background-color: var(--main-color);
+  color: #fff;
+}
+
+.btn-primary:hover {
+  background-color: #2980b9;
+}
+
+.btn-secondary {
+  background-color: #7f8c8d;
+  color: #fff;
+}
+
+.btn-secondary:hover {
+  background-color: #636e72;
+}
+
+.btn-danger {
+  background-color: #e74c3c;
+  color: #fff;
+}
+
+.btn-danger:hover {
+  background-color: #c0392b;
+}
+
+/* النموذج */
+input[type="text"],
+input[type="number"],
+select {
+  width: 100%;
+  padding: 8px 10px;
+  font-size: 16px;
+  margin-bottom: 15px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-sizing: border-box;
+}
+
+input[type="color"] {
+  width: 60px;
+  height: 34px;
+  padding: 0;
+  margin-left: 10px;
+  vertical-align: middle;
+  border: none;
+  cursor: pointer;
+}
+
+label {
+  display: block;
+  margin-bottom: 5px;
+  font-weight: bold;
+}
+
+.form-row {
+  display: flex;
+  gap: 15px;
+  margin-bottom: 15px;
+  flex-wrap: wrap;
+}
+
+.form-row input,
+.form-row select {
+  flex: 1 1 150px;
+}
+
+/* الجداول */
+.styled-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 15px;
+  box-shadow: 0 0 10px rgba(0,0,0,0.1);
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.styled-table th,
+.styled-table td {
+  padding: 12px 15px;
+  text-align: center;
+}
+
+.styled-table thead tr {
+  background-color: var(--main-color);
+  color: #fff;
+  font-weight: bold;
+}
+
+.styled-table tbody tr:nth-child(even) {
+  background-color: #f3f6f9;
+}
+
+.styled-table tbody tr:hover {
+  background-color: #d1e7fd;
+  cursor: pointer;
+}
+
+/* التنسيق الداخلي */
+.inline-row {
+  display: flex;
+  gap: 15px;
+  flex-wrap: wrap;
+  margin-bottom: 15px;
+}
+
+.inline-item {
+  flex: 1 1 150px;
+}
+
+/* وسط الصفحة */
+.centered {
+  text-align: center;
+  font-size: 22px;
+  font-weight: bold;
+  margin-bottom: 20px;
+}
+
+/* الساعة */
+#clock {
+  position: fixed;
+  bottom: 10px;
+  left: 10px;
+  font-weight: bold;
+  background: var(--main-color);
+  color: white;
+  padding: 5px 10px;
+  border-radius: 8px;
+  font-size: 16px;
+  user-select: none;
+  z-index: 1000;
+}
+
+/* الأيقونات داخل الأزرار */
+button i {
+  font-size: 18px;
+}
+
+/* شعار مرفوع */
+.logo-img {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  max-width: 80px;
+  max-height: 80px;
+}
+
+/* شاشة الترحيب شعار */
+#welcome-logo {
+  width: 150px;
+  margin-bottom: 20px;
+}
+
+/* شاشة إدخال البيانات: container */
+.data-entry-form {
+  position: relative;
+  max-width: 700px;
+  margin: auto;
+}
+
+/* رسالة التنبيه */
+.alert {
+  background-color: #e74c3c;
+  color: white;
+  padding: 10px 15px;
+  border-radius: 6px;
+  margin-bottom: 15px;
+}
+
+/* قائمة */
+.list {
+  list-style: none;
+  padding-left: 0;
+  margin-top: 10px;
+}
+
+.list li {
+  background-color: #f7f9fa;
+  margin-bottom: 6px;
+  padding: 8px 12px;
+  border-radius: 6px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.list li button {
+  padding: 3px 8px;
+  font-size: 14px;
+}
