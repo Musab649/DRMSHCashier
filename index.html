@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>نظام كاشير المسالخ</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+<style>
+/* أضفت CSS هنا لأنك طلبت كامل */
+  * {
+    box-sizing: border-box;
+    margin: 0; padding: 0;
+  }
+  body {
+    font-family: 'Arial', sans-serif;
+    background: #f9fafc;
+    color: #333;
+    direction: rtl;
+    padding: 20px;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+  .section { display: none; }
+  .section.active { display: block; }
+  .blinking {
+    animation: blinkingText 1.5s infinite;
+    font-size: 24px;
+    font-weight: bold;
+    color: #2c3e50;
+    text-align: center;
+    margin-top: 100px;
+  }
+  @keyframes blinkingText {
+    0%,100% { opacity: 1; }
+    50% { opacity: 0; }
+  }
+  h2 {
+    margin-bottom: 20px;
+    color: #2c3e50;
+    font-weight: bold;
+    text-align: center;
+  }
+  label {
+    display: block;
+    margin: 8px 0 5px 0;
+    font-weight: bold;
+    font-size: 16px;
+  }
+  input[type="text"], input[type="number"], select {
+    padding: 8px 10px;
+    font-size: 16px;
+    margin-bottom: 12px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    width: 100%;
+  }
+  button {
+    background-color: #3498db;
+    border: none;
+    color: white;
+    padding: 10px 18px;
+    margin: 8px 5px;
+    cursor: pointer;
+    border-radius: 6px;
+    font-size: 16px;
+    transition: background-color 0.3s;
+  }
+  button:hover {
+    background-color: #2980b9;
+  }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 15px;
+  }
+  table th, table td {
+    border: 1px solid #ccc;
+    padding: 10px;
+    text-align: center;
+    font-size: 15px;
+  }
+  table th {
+    background-color: #3498db;
+    color: white;
+  }
+  table tr:hover {
+    background-color: #ecf0f1;
+  }
+  .inline-row {
+    display: flex;
+    gap: 15px;
+    flex-wrap: wrap;
+    margin-bottom: 15px;
+  }
+  .inline-item {
+    flex: 1 1 150px;
+  }
+  .centered {
+    text-align: center;
+    font-size: 22px;
+    font-weight: bold;
+    margin-bottom: 20px;
+  }
+  #clock {
+    position: fixed;
+    bottom: 10px;
+    left: 10px;
+    font-weight: bold;
+    background: #3498db;
+    color: white;
+    padding: 5px 10px;
+    border-radius: 8px;
+    font-size: 16px;
+  }
+  .action-btn {
+    background-color: #e67e22;
+    border: none;
+    padding: 5px 8px;
+    color: white;
+    cursor: pointer;
+    border-radius: 5px;
+    margin: 0 2px;
+    font-size: 14px;
+  }
+  .action-btn.delete {
+    background-color: #c0392b;
+  }
+  /* شعار الصورة */
+  #logoImg {
+    display: block;
+    margin: 0 auto 20px auto;
+    max-width: 150px;
+    height: auto;
+    border-radius: 8px;
+  }
+  /* شاشة الإدخال: تنسيق أكبر للنصوص */
+  #dataEntry label, #dataEntry input, #dataEntry select {
+    font-size: 18px;
+  }
+  #dataEntry input[readonly], #dataEntry input[disabled] {
+    background-color: #eee;
+  }
+  /* فوتر لإظهار آخر تعديل */
+  #lastEdit {
+    font-size: 14px;
+    color: #666;
+    text-align: center;
+    margin-top: 10px;
+  }
+  /* بعض التحسينات لواجهة إضافة المستخدم */
+  #manageUsers input, #manageUsers select {
+    margin-bottom: 10px;
+  }
+  /* لوحة تحكم خاصة بالادمن فقط */
+  .admin-only {
+    display: none;
+  }
+</style>
+</head>
+<body>
+
+<!-- شاشة الترحيب -->
+<div id="splash" class="section active">
+  <img id="logoImg" src="" alt="شعار" />
+  <h1 class="blinking">مرحباً بكم في نظام إدارة الفواتير بمسالخ الظفرة</h1>
+</div>
+
+<!-- شاشة تسجيل الدخول -->
+<div id="login" class="section">
+  <h2>تسجيل الدخول</h2>
+  <label for="employeeId">الرقم الوظيفي:</label>
+  <input type="text" id="employeeId" autocomplete="off" />
+  <button onclick="login()">دخول</button>
+  <button onclick="closeProgram()">إلغاء</button>
+</div>
+
+<!-- لوحة التحكم -->
+<div id="dashboard" class="section">
+  <h2>مرحباً <span id="username"></span></h2>
+  <button class="admin-only" onclick="showSection('manageUsers')"><i class="fa fa-users"></i> إدارة المستخدمين</button>
+  <button class="admin-only" onclick="showSection('settings')"><i class="fa fa-cog"></i> الإعدادات</button>
+  <button onclick="showSection('dataEntry')"><i class="fa fa-pen"></i> إدخال البيانات</button>
+  <button onclick="showSection('report')"><i class="fa fa-file-alt"></i> تقرير المتعاملين</button>
+  <button onclick="logout()"><i class="fa fa-sign-out-alt"></i> تسجيل خروج</button>
+</div>
+
+<!-- إدارة المستخدمين -->
+<div id="manageUsers" class="section admin-only">
+  <h2>قائمة المستخدمين</h2>
+  <table id="usersTable">
+    <thead>
+      <tr>
+        <th>الرقم الوظيفي</th>
+        <th>اسم المستخدم</th>
+        <th>الدور</th>
+        <th>الموقع</th>
+        <th>إجراءات</th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+  </table>
+  <h3>إضافة مستخدم جديد</h3>
+  <label>رقم وظيفي:</label>
+  <input type="text" id="newUserId" autocomplete="off" />
+  <label>اسم المستخدم:</label>
+  <input type="text" id="newUserName" autocomplete="off" />
+  <label>الدور:</label>
+  <select id="newUserRole">
+    <option value="admin">مسؤول</option>
+    <option value="user">مستخدم</option>
+  </select>
+  <label>الموقع:</label>
+  <select id="newUserSite"></select>
+  <button onclick="addUser()">إضافة</button>
+  <button onclick="showSection('dashboard')">رجوع</button>
+</div>
+
+<!-- الإعدادات -->
+<div id="settings" class="section admin-only">
+  <h2>الإعدادات</h2>
+  <h3>رفع شعار (صورة)</h3>
+  <input type="file" id="logoUpload" accept="image/*" />
+  <button onclick="uploadLogo()">رفع الصورة</button>
+  <hr>
+  <h3>المواقع</h3>
+  <input type="text" id="newSite" placeholder="موقع جديد" autocomplete="off" />
+  <button onclick="addSite()">إضافة موقع</button>
+  <ul id="sitesList"></ul>
+  <h3>أنواع الذبائح</h3>
+  <input type="text" id="newAnimal" placeholder="نوع ذبيحة جديد" autocomplete="off" />
+  <button onclick="addAnimal()">إضافة نوع</button>
+  <ul id="animalsList"></ul>
+  <h3>أنواع التقطيع</h3>
+  <input type="text" id="newCutting" placeholder="نوع تقطيع جديد" autocomplete="off" />
+  <button onclick="addCutting()">إضافة تقطيع</button>
+  <ul id="cuttingsList"></ul>
+  <h3>تعيين الأسعار</h3>
+  <label>نوع الذبيحة:</label>
+  <select id="priceAnimal"></select>
+  <label>نوع التقطيع:</label>
+  <select id="priceCutting"></select>
+  <input type="number" id="priceValue" placeholder="السعر" min="0" />
+  <button onclick="setPrice()">تعيين سعر</button>
+  <button onclick="showSection('dashboard')">رجوع</button>
+</div>
+
+<!-- إدخال البيانات -->
+<div id="dataEntry" class="section">
+  <img id="logoEntry" src="" alt="شعار" style="float:left; max-width: 80px; margin-bottom: 15px;"/>
+  <h2 id="dataEntrySiteTitle" class="centered"></h2>
+  <label>رقم الفاتورة:</label>
+  <input type="text" id="invoiceNumber" readonly disabled />
+  <label>رقم التليفون:</label>
+  <input type="text" id="phone" autocomplete="off" oninput="lookupClient()" />
+  <label>اسم المتعامل:</label>
+  <input type="text" id="clientName" autocomplete="off" />
+  <div class="inline-row">
+    <div class="inline-item">
+      <label>نوع الذبيحة:</label>
+      <select id="animalType" onchange="updatePrice()"></select>
+    </div>
+    <div class="inline-item">
+      <label>نوع التقطيع:</label>
+      <select id="cuttingType" onchange="updatePrice()"></select>
+    </div>
+    <div class="inline-item">
+      <label>رقم الذبيحة:</label>
+      <select id="animalNumber"></select>
+    </div>
+    <div class="inline-item">
+      <label>رقم الاستيكر:</label>
+      <select id="stickerNumber"></select>
+    </div>
+  </div>
+  <label>عدد الذبائح:</label>
+  <select id="quantity" onchange="updatePrice()"></select>
+  <label>طريقة الدفع:</label>
+  <label><input type="radio" name="paymentType" value="كاش" checked /> كاش</label>
+  <label><input type="radio" name="paymentType" value="بطاقة" /> بطاقة</label>
+  <label>سعر الوحدة:</label>
+  <input type="number" id="unitPrice" readonly />
+  <label>الإجمالي:</label>
+  <input type="number" id="totalPrice" readonly />
+  <button onclick="showInvoice()">معاينة الفاتورة</button>
+  <button onclick="saveData()">إضافة</button>
+  <button onclick="showSection('dashboard')">رجوع</button>
+</div>
+
+<!-- تقرير المتعاملين -->
+<div id="report" class="section">
+  <img id="logoReport" src="" alt="شعار" style="float:right; max-width: 80px; margin-bottom: 15px;"/>
+  <h2>تقرير المتعاملين</h2>
+  
+  <label>تصفية حسب الموقع:</label>
+  <select id="filterSite" onchange="renderReportTable()"></select>
+  
+  <label>تصفية حسب التاريخ من:</label>
+  <input type="date" id="filterDateFrom" onchange="renderReportTable()" />
+  <label>إلى:</label>
+  <input type="date" id="filterDateTo" onchange="renderReportTable()" />
+  
+  <table id="reportTable">
+    <thead>
+      <tr>
+        <th>الموقع</th>
+        <th>اسم المتعامل</th>
+        <th>رقم التليفون</th>
+        <th>رقم الفاتورة</th>
+        <th>نوع الذبيحة</th>
+        <th>نوع التقطيع</th>
+        <th>عدد الذبائح</th>
+        <th>طريقة الدفع</th>
+        <th>سعر الوحدة</th>
+        <th>الإجمالي</th>
+        <th>تاريخ الإدخال</th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+  </table>
+  <button onclick="showSection('dashboard')">رجوع</button>
+</div>
+
+<!-- معاينة الفاتورة -->
+<div id="invoicePreview" class="section invoice">
+  <h3>فاتورة</h3>
+  <table>
+    <tr><th>رقم الفاتورة</th><td id="invNo"></td></tr>
+    <tr><th>اسم المتعامل</th><td id="invClient"></td></tr>
+    <tr><th>رقم التليفون</th><td id="invPhone"></td></tr>
+    <tr><th>نوع الذبيحة</th><td id="invAnimalType"></td></tr>
+    <tr><th>نوع التقطيع</th><td id="invCuttingType"></td></tr>
+    <tr><th>عدد الذبائح</th><td id="invQty"></td></tr>
+    <tr><th>سعر الوحدة</th><td id="invUnitPrice"></td></tr>
+    <tr><th>الإجمالي</th><td id="invTotal"></td></tr>
+    <tr><th>طريقة الدفع</th><td id="invPaymentType"></td></tr>
+    <tr><th>تاريخ الإدخال</th><td id="invDate"></td></tr>
+  </table>
+  <button onclick="window.print()">🖨️ طباعة</button>
+  <button onclick="showSection('dataEntry')">رجوع</button>
+</div>
+
+<!-- ساعة -->
+<div id="clock"></div>
+
+<!-- مكان ظهور آخر تعديل -->
+<div id="lastEdit"></div>
+
+<script src="script.js"></script>
+</body>
+</html>
